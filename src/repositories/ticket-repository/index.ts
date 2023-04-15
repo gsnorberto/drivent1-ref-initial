@@ -11,9 +11,16 @@ async function getUserTickets(enrollmentId: number) {
   });
 }
 
+async function createTicket(ticketTypeId: number, enrollmentId: number) {
+  return prisma.ticket.create({
+    data: { status: 'RESERVED', ticketTypeId, enrollmentId },
+  });
+}
+
 const ticketRepository = {
   getTicketTypes,
   getUserTickets,
+  createTicket,
 };
 
 export default ticketRepository;
