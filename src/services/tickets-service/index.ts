@@ -6,7 +6,7 @@ import enrollmentRepository from '@/repositories/enrollment-repository';
 async function getTicketTypes(): Promise<TicketType[]> {
   const ticketTypes = await ticketRepository.getTicketTypes();
 
-  if (!ticketTypes) throw notFoundError;
+  if (!ticketTypes) throw notFoundError();
 
   return ticketTypes;
 }
@@ -17,10 +17,10 @@ async function getUserTickets(userId: number): Promise<
   }
 > {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) throw notFoundError;
+  if (!enrollment) throw notFoundError();
 
   const tickets = await ticketRepository.getUserTickets(enrollment.id);
-  if (!tickets) throw notFoundError;
+  if (!tickets) throw notFoundError();
 
   return tickets;
 }
@@ -34,13 +34,13 @@ async function createTicket(
   }
 > {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) throw notFoundError;
+  if (!enrollment) throw notFoundError();
 
   await ticketRepository.createTicket(ticketTypeId, enrollment.id);
 
   const userTicket = await ticketRepository.getUserTickets(enrollment.id);
 
-  if (!userTicket) throw notFoundError;
+  if (!userTicket) throw notFoundError();
 
   return userTicket;
 }

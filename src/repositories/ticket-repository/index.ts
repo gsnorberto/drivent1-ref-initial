@@ -4,6 +4,15 @@ async function getTicketTypes() {
   return prisma.ticketType.findMany();
 }
 
+async function getTicketWithEnrollment(ticketId: number) {
+  return prisma.ticket.findFirst({
+    where: { id: ticketId },
+    include: {
+      Enrollment: true,
+    },
+  });
+}
+
 async function getUserTickets(enrollmentId: number) {
   return prisma.ticket.findFirst({
     where: { enrollmentId },
@@ -19,6 +28,7 @@ async function createTicket(ticketTypeId: number, enrollmentId: number) {
 
 const ticketRepository = {
   getTicketTypes,
+  getTicketWithEnrollment,
   getUserTickets,
   createTicket,
 };

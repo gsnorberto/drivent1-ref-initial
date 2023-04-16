@@ -1,6 +1,11 @@
-// import { Router } from "express";
+import { Router } from 'express';
+import { authenticateToken, validateQuery } from '@/middlewares';
+import { paymentInfoSchema } from '@/schemas';
+import { getPaymentInformation } from '@/controllers';
 
-// const paymentsRouter = Router();
+const paymentsRouter = Router();
 
-// paymentsRouter.get('/');
+paymentsRouter.get('/', authenticateToken, validateQuery(paymentInfoSchema), getPaymentInformation);
 // paymentsRouter.post('/process');
+
+export { paymentsRouter };

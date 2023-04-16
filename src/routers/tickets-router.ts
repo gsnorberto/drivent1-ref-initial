@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getTicketTypes, getUserTickets, createTicket } from '@/controllers/tickets-controller';
+import { getTicketTypes, getUserTickets, createTicket } from '@/controllers';
 import { authenticateToken, validateBody } from '@/middlewares';
 import { createTickedSchema } from '@/schemas';
 
