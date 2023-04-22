@@ -17,8 +17,6 @@ export function validateQuery<T>(schema: ObjectSchema<T>): ValidationMiddleware 
 
 function validate(schema: ObjectSchema, type: 'body' | 'params' | 'query') {
   return (req: Request, res: Response, next: NextFunction) => {
-    //console.log("eii: ", req[type]);
-
     const { error } = schema.validate(req[type], {
       abortEarly: false,
     });

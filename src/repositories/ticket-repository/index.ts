@@ -28,6 +28,30 @@ async function getTicketWithEnrollment(ticketId: number) {
   });
 }
 
+async function getTicketWithEnrollmentByUserId(userId: number) {
+  return prisma.ticket.findFirst({
+    where: {
+      Enrollment: {
+        userId,
+      },
+    },
+    select: {
+      status: true,
+      Enrollment: {
+        select: {
+          userId: true,
+        },
+      },
+      TicketType: {
+        select: {
+          includesHotel: true,
+          isRemote: true,
+        },
+      },
+    },
+  });
+}
+
 async function getUserTickets(enrollmentId: number) {
   return prisma.ticket.findFirst({
     where: { enrollmentId },
@@ -56,6 +80,7 @@ const ticketRepository = {
   getUserTickets,
   createTicket,
   updateTicketStatus,
+  getTicketWithEnrollmentByUserId,
 };
 
 export default ticketRepository;
