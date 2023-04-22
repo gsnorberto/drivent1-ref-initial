@@ -11,7 +11,7 @@ async function getHotels(userId: number): Promise<Hotel[]> {
   if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) throw paymentRequiredError();
 
   const hotels = await hotelRepository.getHotels();
-  if (!hotels) throw notFoundError();
+  if (hotels.length === 0) throw notFoundError();
 
   return hotels;
 }
@@ -24,7 +24,7 @@ async function getHotelRooms(userId: number) {
   if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) throw paymentRequiredError();
 
   const hotelRooms = await hotelRepository.getHotelRooms();
-  if (!hotelRooms) throw notFoundError();
+  if (hotelRooms.length === 0) throw notFoundError();
 
   return hotelRooms;
 }
