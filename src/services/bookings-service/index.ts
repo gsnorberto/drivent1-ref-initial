@@ -30,15 +30,18 @@ async function addBooking(userId: number, roomId: number): Promise<{ bookingId: 
   return { bookingId: newBooking.id };
 }
 
-async function changeBooking(userId: number, roomId: number) {
+async function changeBooking(userId: number, roomId: number, bookingId: number) {
   const room = await roomRepository.getRoom(roomId);
   if (!room) throw notFoundError();
 
   const intendedBooking = await bookingRepository.getBookingByRoomId(roomId);
   if (intendedBooking) throw forbiddenError('Sold out rooms');
 
-  const currentBooking = await bookingRepository.getUserBooking(userId);
+  const currentBooking = await bookingRepository.getBookingById(bookingId);
   if (!currentBooking) throw forbiddenError('User does not have booking');
+  if (currentBooking.userId !== userId) {
+    throw forbiddenError('Booking does not belong to the user');
+  }
 
   const newBooking = await bookingRepository.changeBooking(currentBooking.id, roomId);
 

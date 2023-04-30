@@ -16,7 +16,7 @@ export async function getUserBooking(req: AuthenticatedRequest, res: Response) {
 
 export async function addBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-  const roomId: number = +req.params.roomId;
+  const roomId: number = +req.body.roomId;
 
   try {
     const booking = await bookingsService.addBooking(userId, roomId);
@@ -32,10 +32,11 @@ export async function addBooking(req: AuthenticatedRequest, res: Response) {
 
 export async function changeBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-  const roomId: number = +req.params.roomId;
+  const roomId: number = +req.body.roomId;
+  const bookingId: number = +req.params.roomId;
 
   try {
-    const booking = await bookingsService.changeBooking(userId, roomId);
+    const booking = await bookingsService.changeBooking(userId, roomId, bookingId);
     return res.status(httpStatus.OK).send(booking);
   } catch (error) {
     if (error.name === 'ForbiddenError') {
