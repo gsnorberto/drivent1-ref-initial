@@ -15,8 +15,8 @@ async function addBooking(userId: number, roomId: number): Promise<{ bookingId: 
   const room = await roomRepository.getRoom(roomId);
   if (!room) throw notFoundError();
 
-  const booking = await bookingRepository.getBookingById(room.id);
-  if (!booking) throw forbiddenError('Sold out rooms');
+  const booking = await bookingRepository.getBookingByRoomId(room.id);
+  if (booking) throw forbiddenError('Sold out rooms');
 
   const ticket = await ticketRepository.getTicketWithEnrollmentByUserId(userId);
   if (!ticket) throw forbiddenError('User does not have ticket');
@@ -30,14 +30,25 @@ async function addBooking(userId: number, roomId: number): Promise<{ bookingId: 
   return { bookingId: newBooking.id };
 }
 
-// async function changeBooking(userId: number){
+async function changeBooking(userId: number, roomId: number) {
+  const room = await roomRepository.getRoom(roomId);
+  if (!room) throw notFoundError();
 
-// }
+  const intendedBooking = await bookingRepository.getBookingByRoomId(roomId);
+  if (intendedBooking) throw forbiddenError('Sold out rooms');
+
+  const currentBooking = await bookingRepository.getUserBooking(userId);
+  if (!currentBooking) throw forbiddenError('User does not have booking');
+
+  const newBooking = await bookingRepository.changeBooking(currentBooking.id, roomId);
+
+  return { bookingId: newBooking.id };
+}
 
 const bookingsService = {
   getUserBooking,
   addBooking,
-  // changeBooking
+  changeBooking,
 };
 
 export default bookingsService;
