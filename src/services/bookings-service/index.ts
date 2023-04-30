@@ -1,18 +1,34 @@
 import { Booking, Room } from '@prisma/client';
+import { notFoundError, forbiddenError } from '@/errors';
 import bookingRepository from '@/repositories/bookings-repository';
-import { notFoundError } from '@/errors';
+import roomRepository from '@/repositories/room-repository';
+import ticketRepository from '@/repositories/ticket-repository';
 
 async function getUserBooking(userId: number): Promise<{ id: number; Room: Room }> {
   const booking = await bookingRepository.getUserBooking(userId);
-
   if (!booking) throw notFoundError();
 
   return booking;
 }
 
-// async function addBooking(userId: number){
+async function addBooking(userId: number, roomId: number): Promise<{ bookingId: number }> {
+  const room = await roomRepository.getRoom(roomId);
+  if (!room) throw notFoundError();
 
-// }
+  const booking = await bookingRepository.getBookingById(room.id);
+  if (!booking) throw forbiddenError('Sold out rooms');
+
+  const ticket = await ticketRepository.getTicketWithEnrollmentByUserId(userId);
+  if (!ticket) throw forbiddenError('User does not have ticket');
+  if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
+    throw forbiddenError('Ticket does not include hotel (is remote)');
+  }
+  if (ticket.status !== 'PAID') throw forbiddenError('Ticket not have been paid');
+
+  const newBooking = await bookingRepository.addBooking(userId, roomId);
+
+  return { bookingId: newBooking.id };
+}
 
 // async function changeBooking(userId: number){
 
@@ -20,7 +36,7 @@ async function getUserBooking(userId: number): Promise<{ id: number; Room: Room 
 
 const bookingsService = {
   getUserBooking,
-  // addBooking,
+  addBooking,
   // changeBooking
 };
 
