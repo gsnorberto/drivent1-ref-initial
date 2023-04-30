@@ -33,7 +33,7 @@ export async function addBooking(req: AuthenticatedRequest, res: Response) {
 export async function changeBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const roomId: number = +req.body.roomId;
-  const bookingId: number = +req.params.roomId;
+  const bookingId: number = +req.params.bookingId;
 
   try {
     const booking = await bookingsService.changeBooking(userId, roomId, bookingId);
