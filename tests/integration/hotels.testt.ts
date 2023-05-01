@@ -13,11 +13,6 @@ import app, { init } from '@/app';
 
 beforeAll(async () => {
   await init();
-  await cleanDb();
-});
-
-afterAll(async () => {
-  await cleanDb();
 });
 
 beforeEach(async () => {
